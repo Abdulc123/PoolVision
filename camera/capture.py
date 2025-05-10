@@ -20,3 +20,15 @@ class CameraCapture:
         Capture a single frame from the camera.
         :return: The captured frame or None if it failed
         """
+        result, frame = self.cap.read()
+        if not result:
+            return None
+        return frame
+    
+    def release(self):
+        """
+        Release the camera resource
+        """
+        self.cap.release()
+
+    
