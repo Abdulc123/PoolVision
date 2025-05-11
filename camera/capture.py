@@ -1,4 +1,7 @@
-import cv2
+import cv2 as cv
+
+#C:\Users\abdul\AppData\Local\Programs\Python\Python313
+#C:\Users\abdul\AppData\Local\Programs\Python\Python313\Scripts
 
 class CameraCapture:
     def __init__(self, camera_index = 1, width = 1280, height = 720):
@@ -8,9 +11,14 @@ class CameraCapture:
         :param width: Width of the video frame
         :parm height: Height of the video frame
         """
-        self.cap = cv2.VideoCapture(camera_index, cv2.CAP_DSHOW)
-        self.cap.set(cv2.CAP_PROP_FRAME_WIDTH, width)
-        self.cap.set(cv2.CAP_PROP_FRAME_HEIGHT, height)
+        self.cap = cv.VideoCapture(camera_index, cv.CAP_DSHOW)
+        self.cap.set(cv.CAP_PROP_FRAME_WIDTH, width)
+        self.cap.set(cv.CAP_PROP_FRAME_HEIGHT, height)
+        self.cap.set(cv.CAP_PROP_FPS, 30)
+
+        # Print out the actual FPS
+        actual_fps = self.cap.get(cv.CAP_PROP_FPS)
+        print(f"[INFO] Camera running at {actual_fps} FPS")
 
         if not self.cap.isOpened():
             raise RuntimeError("CameraCapture: Failed to open camera.")
@@ -27,7 +35,7 @@ class CameraCapture:
     
     def release(self):
         """
-        Frees up the webcame connection cv2 made when done with window
+        Frees up the webcame connection cv made when done with window
         """
         self.cap.release()
 
@@ -42,12 +50,12 @@ class CameraCapture:
                 print("CameraCapture: Failed to capture frame.")
                 break
 
-            cv2.imshow(window_name, frame)
+            cv.imshow(window_name, frame)
 
-            key = cv2.waitKey(1)
+            key = cv.waitKey(1)
             # Closes window when q is pressed or close is selected
-            if key == ord('q') or cv2.getWindowProperty(window_name, cv2.WND_PROP_VISIBLE) < 1:
+            if key == ord('q') or cv.getWindowProperty(window_name, cv.WND_PROP_VISIBLE) < 1:
                 break
 
         self.release()
-        cv2.destroyAllWindows()
+        cv.destroyAllWindows()
