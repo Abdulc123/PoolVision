@@ -1,25 +1,32 @@
 import cv2 as cv
+import numpy as np
 from camera.capture import CameraCapture
-from processing.detector import detectTableEdges
+from processing.detector import isolateTable
 
 def main():
-    # 0 for regular camera, 1 for external camera
-    camera = CameraCapture(0)
-    # camera.show_live_feed()
+    camera = CameraCapture(camera_index=1, width=1280, height=720)
 
     while True:
         frame = camera.get_frame()
-        warped, corners = detectTableEdges(frame)
-
-        if corners is not None:
-            for point in corners:
-                cv.circle(warped, tuple(point.astype(int)), 5, (0, 255, 0), -1)
-
-        cv.imshow("Warped Table View", warped)
-        
-        if cv.waitKey(1) & 0xFF == ord('q'):
+        if frame is None:
+            print("[ERROR] Failed to capture frame.")
             break
-    
+
+        warped, mask = isolateTable(frame)
+
+        if warped is not None:
+            cv.imshow("Warped Table View", warped)
+        else:
+            print("[INFO] Warped view could not be generated.")
+        cv.imshow("Green Mask", mask)
+
+        cv.imshow("Raw View", frame)
+        cv.imshow("Green Mask", mask)
+
+        key = cv.waitKey(1)
+        if key == ord('q') or cv.getWindowProperty("Raw View", cv.WND_PROP_VISIBLE) < 1:
+            break
+
     camera.release()
     cv.destroyAllWindows()
 

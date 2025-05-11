@@ -1,8 +1,5 @@
 import cv2 as cv
 
-#C:\Users\abdul\AppData\Local\Programs\Python\Python313
-#C:\Users\abdul\AppData\Local\Programs\Python\Python313\Scripts
-
 class CameraCapture:
     def __init__(self, camera_index = 1, width = 1280, height = 720):
         """
