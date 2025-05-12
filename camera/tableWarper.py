@@ -1,8 +1,7 @@
-# camera/warp.py
-
 import cv2 as cv
 import numpy as np
 from cv2 import aruco
+import os, json, atexit
 
 # 1) CONFIGURE YOUR TABLE “CANVAS” SIZE IN PIXELS
 # These dimensions define the size of the output warped image (top-down view of the table).
@@ -20,17 +19,50 @@ DEST_PT = {
     5: [TABLE_W//2, TABLE_H],   # Bottom-middle (optional, not used for homography)
 }
 
-# 3) SET UP your ArUco detector once
 # ArUco dictionary defines the type of markers being used. DICT_6X6_250 means:
 # - 6x6 grid markers
 # - 250 unique marker IDs
 ARUCO_DICT = aruco.getPredefinedDictionary(aruco.DICT_6X6_250)
 
-# Detector parameters control how the ArUco markers are detected.
-# These parameters can be fine-tuned for better detection in different lighting or noise conditions.
-ARUCO_PARAMS = aruco.DetectorParameters()
-
 _corner_cache = {} # maps corner ID → last seen (x,y) for each corner
+# Local memory storage for previous corner_cache information (Pulls data initially and saves when done)
+_CACHE_FILE = os.path.join(os.path.dirname(__file__), "corner_cache.json")
+_CACHE_TMPFILE = _CACHE_FILE + ".tmp"
+
+def _loadCache():
+    """Load existing cache if it exists, and print out what was loaded."""
+    if not os.path.exists(_CACHE_FILE):
+        print(f"[warp] no cache file found at {_CACHE_FILE}")
+        return
+    try:
+        with open(_CACHE_FILE, "r") as f:
+            data = json.load(f)
+        for k, v in data.items():
+            _corner_cache[int(k)] = np.array(v, dtype=np.float32)
+        print(f"[warp] loaded corner_cache:", _corner_cache)
+    except Exception as e:
+        print(f"[warp] failed to load cache: {e}")
+
+def saveCache():
+    """Atomically write the full cache to disk, flushing and fsyncing."""
+    try:
+        # turn numpy arrays into pure-Python lists of floats
+        data = { str(k): [ float(x) for x in v.tolist() ] 
+                 for k, v in _corner_cache.items() }
+
+        # write JSON out to a temp file first
+        with open(_CACHE_TMPFILE, "w") as f:
+            f.write(json.dumps(data))
+            f.flush()
+            os.fsync(f.fileno())
+
+        # atomically overwrite the real cache file
+        os.replace(_CACHE_TMPFILE, _CACHE_FILE)
+        print(f"[warp] saved corner_cache ({len(data)} entries) to {_CACHE_FILE}")
+    except Exception as e:
+        print(f"[warp] failed to save cache: {e}")
+
+_loadCache() # load existing cache on module import
 
 def getWarpedFrame(frame, debug_mode = True):
     """
@@ -134,3 +166,4 @@ def populateArucoParamSettings():
     aruco_params.cornerRefinementMinAccuracy = 0.1  
 
     return aruco_params
+
