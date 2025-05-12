@@ -2,22 +2,8 @@ import cv2 as cv
 import numpy as np
 from cv2 import aruco
 import os, json, atexit
+from config.settings import WARPED_TABLE_H, WARPED_TABLE_W, WARPED_DEST_PT
 
-# 1) CONFIGURE YOUR TABLE “CANVAS” SIZE IN PIXELS
-# These dimensions define the size of the output warped image (top-down view of the table).
-TABLE_W, TABLE_H = 1000, 500  # Width and height of the table in pixels
-
-# 2) MAP each marker ID → its desired (x, y) in that top-down view
-# This dictionary maps ArUco marker IDs to their corresponding positions in the warped (top-down) view.
-# Marker IDs 0–3 are used as the corners of the table.
-DEST_PT = {
-    0: [0,         0],          # Top-left corner of the table
-    1: [TABLE_W,   0],          # Top-right corner of the table
-    2: [TABLE_W,   TABLE_H],    # Bottom-right corner of the table
-    3: [0,         TABLE_H],    # Bottom-left corner of the table
-    4: [TABLE_W//2, 0],         # Top-middle (optional, not used for homography)
-    5: [TABLE_W//2, TABLE_H],   # Bottom-middle (optional, not used for homography)
-}
 
 # ArUco dictionary defines the type of markers being used. DICT_6X6_250 means:
 # - 6x6 grid markers
@@ -72,7 +58,7 @@ def getWarpedFrame(frame, debug_mode = True):
     - frame: BGR image (numpy array) from your capture device.
 
     Returns:
-    - warped: Top-down warped BGR frame of size (TABLE_W, TABLE_H).
+    - warped: Top-down warped BGR frame of size (WARPED_TABLE_W, TABLE_H).
     - None: If fewer than 4 corner markers (IDs 0, 1, 2, 3) are visible or homography fails.
     """
     corners, ids = applyGrayFiltersToFrameAndDetectMarkers(frame)
@@ -96,7 +82,7 @@ def getWarpedFrame(frame, debug_mode = True):
             return None
         else:
             src_pts.append(_corner_cache[mid])
-            dst_pts.append(DEST_PT[mid])
+            dst_pts.append(WARPED_DEST_PT[mid])
 
     src = np.array(src_pts, dtype=np.float32)
     dst = np.array(dst_pts, dtype=np.float32)
@@ -114,8 +100,8 @@ def getWarpedFrame(frame, debug_mode = True):
 
     # Warp the input frame to the top-down view using the homography matrix.
     # - H: Homography matrix.
-    # - (TABLE_W, TABLE_H): Size of the output warped image.
-    warped = cv.warpPerspective(frame, H, (TABLE_W, TABLE_H))
+    # - (WARPED_TABLE_W, TABLE_H): Size of the output warped image.
+    warped = cv.warpPerspective(frame, H, (WARPED_TABLE_W, WARPED_TABLE_H))
 
     return warped
 
