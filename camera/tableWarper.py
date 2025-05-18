@@ -50,7 +50,7 @@ def saveCache():
 
 _loadCache() # load existing cache on module import
 
-def getWarpedFrame(frame, debug_mode = True):
+def getWarpedFrame(undistorted, debug_mode = True):
     """
     Warps the input frame to a top-down view of the table using ArUco markers.
 
@@ -61,7 +61,8 @@ def getWarpedFrame(frame, debug_mode = True):
     - warped: Top-down warped BGR frame of size (WARPED_TABLE_W, TABLE_H).
     - None: If fewer than 4 corner markers (IDs 0, 1, 2, 3) are visible or homography fails.
     """
-    corners, ids = applyGrayFiltersToFrameAndDetectMarkers(frame)
+
+    corners, ids = applyGrayFiltersToFrameAndDetectMarkers(undistorted)
 
     # 1. Update corner cahche with the latest detected corners.
     if ids is not None:
@@ -89,7 +90,7 @@ def getWarpedFrame(frame, debug_mode = True):
 
     # Optional, draw rectangle on input for debugging
     if debug_mode:
-        debugTableLines(frame, src, corners, ids)
+        debugTableLines(undistorted, src, corners, ids)
         
 
     # 3. Complete and apply homography
@@ -101,11 +102,11 @@ def getWarpedFrame(frame, debug_mode = True):
     # Warp the input frame to the top-down view using the homography matrix.
     # - H: Homography matrix.
     # - (WARPED_TABLE_W, TABLE_H): Size of the output warped image.
-    warped = cv.warpPerspective(frame, H, (WARPED_TABLE_W, WARPED_TABLE_H))
+    warped = cv.warpPerspective(undistorted, H, (WARPED_TABLE_W, WARPED_TABLE_H))
 
     return warped
 
-def applyGrayFiltersToFrameAndDetectMarkers(frame, ):
+def applyGrayFiltersToFrameAndDetectMarkers(frame):
     params = populateArucoParamSettings() # Params for Aruco Detection Settings
 
     # 1) Color Background Gray

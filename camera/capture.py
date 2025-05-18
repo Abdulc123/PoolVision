@@ -1,7 +1,7 @@
 import cv2 as cv
 
 class CameraCapture:
-    def __init__(self, camera_index = 1, width = 1280, height = 720):
+    def __init__(self, camera_index = 1, width = 1920, height = 1080):
         """
         Initializes the webcam
         :param cameraIndex: 1 for the secondary external camera

@@ -6,12 +6,16 @@ from camera.TableWarper import getWarpedFrame, saveCache
 
 
 def main():
-    camera = CameraCapture(camera_index=1, width=1280, height=720)
-    
+    camera = CameraCapture(camera_index=0, width=Settings.WARPED_TABLE_W, height=Settings.WARPED_TABLE_H)
+
     try:       
         while True:
-            frame = camera.get_frame()        
-            warped = getWarpedFrame(frame, debug_mode=True)
+            frame = camera.get_frame()      
+            # 0) Undistort first:
+            undistorted = cv.remap(frame, Settings.map1, Settings.map2, cv.INTER_LINEAR)
+
+            # 1) Then compute your warp:
+            warped = getWarpedFrame(undistorted, debug_mode=True)  
 
             if warped is not None:
                 cv.imshow("Warped Table", warped)
