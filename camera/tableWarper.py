@@ -2,8 +2,7 @@ import cv2 as cv
 import numpy as np
 from cv2 import aruco
 import os, json, atexit
-from config.settings import WARPED_TABLE_H, WARPED_TABLE_W, WARPED_DEST_PT
-
+from config import settings as Settings
 
 # ArUco dictionary defines the type of markers being used. DICT_6X6_250 means:
 # - 6x6 grid markers
@@ -50,7 +49,7 @@ def saveCache():
 
 _loadCache() # load existing cache on module import
 
-def getWarpedFrame(undistorted, debug_mode = True):
+def getWarpedFrame(frame, debug_mode = True):
     """
     Warps the input frame to a top-down view of the table using ArUco markers.
 
@@ -61,6 +60,9 @@ def getWarpedFrame(undistorted, debug_mode = True):
     - warped: Top-down warped BGR frame of size (WARPED_TABLE_W, TABLE_H).
     - None: If fewer than 4 corner markers (IDs 0, 1, 2, 3) are visible or homography fails.
     """
+
+    # 0) Undistort first:
+    undistorted = cv.remap(frame, Settings.map1, Settings.map2, cv.INTER_LINEAR)
 
     corners, ids = applyGrayFiltersToFrameAndDetectMarkers(undistorted)
 
@@ -83,7 +85,7 @@ def getWarpedFrame(undistorted, debug_mode = True):
             return None
         else:
             src_pts.append(_corner_cache[mid])
-            dst_pts.append(WARPED_DEST_PT[mid])
+            dst_pts.append(Settings.WARPED_DEST_PT[mid])
 
     src = np.array(src_pts, dtype=np.float32)
     dst = np.array(dst_pts, dtype=np.float32)
@@ -102,7 +104,7 @@ def getWarpedFrame(undistorted, debug_mode = True):
     # Warp the input frame to the top-down view using the homography matrix.
     # - H: Homography matrix.
     # - (WARPED_TABLE_W, TABLE_H): Size of the output warped image.
-    warped = cv.warpPerspective(undistorted, H, (WARPED_TABLE_W, WARPED_TABLE_H))
+    warped = cv.warpPerspective(undistorted, H, (Settings.WARPED_TABLE_W, Settings.WARPED_TABLE_H))
 
     return warped
 
