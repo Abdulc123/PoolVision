@@ -62,9 +62,6 @@ class BallDetector:
         ball_mask  = cv.bitwise_not(table_mask)
         ball_mask  = cv.bitwise_and(ball_mask, cv.bitwise_not(self.pocket_mask))
 
-        cv.imshow("Ball Mask After Pocket Exclusion", ball_mask)
-        cv.waitKey(0)
-
         # 2) denoise with your kernel
         k = HOUGH_KERNEL_SIZE
         kern = cv.getStructuringElement(cv.MORPH_ELLIPSE, (k, k))
