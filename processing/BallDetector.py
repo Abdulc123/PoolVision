@@ -35,26 +35,7 @@ class BallDetector:
         # self.initialized = False
 
         self.colored_ball_positions = {} # "Ball Color" : (x,y)
-
-    # def reInitialize(self, frame, ball_positions):
-    #     # ball_positions: list of (x,y)
-    #     self.multi = cv.legacy.MultiTracker_create()
-    #     for x,y in ball_positions:
-    #         size = 30
-    #         bbox = (x - size//2, y - size//2, size, size)
-    #         self.multi.add(cv.legacy.TrackerCSRT_create(), frame, bbox)
-    #     self.initialized = True
-
-    # def update(self, frame):
-    #     if not self.initialized:
-    #         return []
-    #     boxes = self.multi.getObjects()
-    #     centers = []
-    #     for box in boxes:
-    #             x,y,w,h = box
-    #             centers.append((int(x + w/2), int(y + h/2)))
-    #     return centers
-    
+        
     def rawDetectBalls(self, warped: np.ndarray) -> list[tuple[int,int]]:
         # 1) mask out the green table
         hsv        = cv.cvtColor(warped, cv.COLOR_BGR2HSV)

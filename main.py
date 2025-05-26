@@ -15,8 +15,6 @@ def main():
         max_px_radius   = Settings.MAX_BALL_RADIUS_PX,
         green_hsv_range = (Settings.LOWER_GREEN_HSV_RANGE,Settings.UPPER_GREEN_HSV_RANGE)
     )
-    # tracker = ballDetector
-    # frame_count = 0
 
     try:       
         while True:
@@ -25,11 +23,6 @@ def main():
             warped = getWarpedFrame(frame, debug_mode=False)  
             raw_ball_positions = ballDetector.rawDetectBalls(warped)
             colored_ball_positions = ballDetector.getBallColorPositions(warped, raw_ball_positions)
-
-            # # Every 50 frames re initalize the Ball Trackers use CSRT Multi Tracking 
-            # if not tracker.initialized or frame_count % 10 == 0:
-            #     tracker.reInitialize(warped, raw_ball_positions)                
-            #     smoothed_positions = tracker.update(warped)  # internally smoothed by CSRT
 
             # drawBallPosdraitions(raw_ball_positions, warped, simulatedTable=False)
             drawColoredBallPositions(colored_ball_positions, warped)
