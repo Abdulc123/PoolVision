@@ -17,9 +17,9 @@ image_shape = None
 # Termination criteria for cornerSubPix:
 criteria = (cv.TERM_CRITERIA_EPS | cv.TERM_CRITERIA_MAX_ITER, 30, 1e-3)
 
-images = glob.glob('calib_images/*.jpg')
+images = glob.glob('Images/calibration_images/*.jpg')
 if not images:
-    print("No images found in calib_images/")
+    print("No images found in calibration_images")
     sys.exit(1)
 
 for fname in images:

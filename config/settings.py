@@ -1,5 +1,12 @@
 import numpy as np
 import cv2 as cv
+import threading
+
+# Video and Audio Capture variables
+RECORDING_TABLE = True
+LISTEN_FOR_AUDIO_COMMANDS = True
+TAKE_A_PICTURE_EVENT = threading.Event()
+
 # These dimensions define the size of the output warped image (top-down view of the table).
 WARPED_TABLE_W, WARPED_TABLE_H = 1280, 720  # Width and height of the table in pixels
 
@@ -78,8 +85,6 @@ COLOR_MAP_STRIPES = {
     'maroon_stripe': (153,   0,   0),
     'green_stripe' : (  0, 255,   0),
 }
-
-
 
 
 
