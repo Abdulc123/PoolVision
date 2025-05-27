@@ -4,7 +4,7 @@ import threading
 
 # Video and Audio Capture variables
 RECORDING_TABLE = True
-LISTEN_FOR_AUDIO_COMMANDS = True
+LISTEN_FOR_AUDIO_COMMANDS = False
 TAKE_A_PICTURE_EVENT = threading.Event()
 
 # These dimensions define the size of the output warped image (top-down view of the table).

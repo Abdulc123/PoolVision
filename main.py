@@ -1,44 +1,15 @@
 import cv2 as cv
-import speech_recognition as sr
-import simpleaudio as sa
-import time, os, threading, pygame
+import time, os, pygame
 import config.settings as Settings
+import utils.Utils as Utils
 from camera.capture import CameraCapture
 from camera.TableWarper import getWarpedFrame, saveCache
 from processing.BallDetector import BallDetector
 from display.screenDisplay import drawBallPositions, drawColoredBallPositions
 import pygame
 
-
-# def listenForVoice():
-#     recognizer = sr.Recognizer()
-#     mic = sr.Microphone()
-
-#     with mic as source:
-#         recognizer.adjust_for_ambient_noise(source)
-    
-#     while True:
-#         with mic as source:
-#             print("Listening...")
-#             audio = recognizer.listen(source)
-#         try:
-#             command = recognizer.rec(audio).lower()
-#             print(f"You said: {command}")
-#             if "take a picture" in command:
-#                 Settings.TAKE_A_PICTURE_EVENT.set() # Signal the event
-#         except sr.UnknownValueError:
-#             pass
-#         except sr.RequestError as e:
-#             print(f"Audio API error: {e}")
-
-
-# # Start voice listener in a background thread
-# if Settings.LISTEN_FOR_AUDIO_COMMANDS:
-#     voice_thread = threading.Thread(target=listenForVoice, daemon=True)
-#     voice_thread.start()
-
-
 def main():
+    Utils.VoiceManager.toggleAudioCommands(print_audio=True)
     camera = CameraCapture(camera_index=0, width=Settings.WARPED_TABLE_W, height=Settings.WARPED_TABLE_H)
     ballDetector = BallDetector(
         table_px_size=(Settings.WARPED_TABLE_W, Settings.WARPED_TABLE_H),
@@ -71,7 +42,7 @@ def main():
             if key == ord('q'):
                 Settings.RECORDING_TABLE = False
             elif key == ord('p') or Settings.TAKE_A_PICTURE_EVENT.is_set():
-                takePictureAndSave(warped)
+                Utils.PictureManager.takePictureAndSave(warped)
 
     except KeyboardInterrupt:
         print("Keyboard interrupt received, exiting...")
@@ -86,26 +57,6 @@ def main():
         camera.release()
         cv.destroyAllWindows()
 
-
-def takePictureAndSave(frame):
-    try:
-        machine_learning_path = "Images/machine_learning_images"
-        os.makedirs(machine_learning_path, exist_ok=True)  # Ensure the directory exists
-        filename = f"machine_learning_{int(time.time() * 1000)}.jpg"
-        filepath = os.path.join(machine_learning_path, filename)
-        cv.imwrite(filepath, frame)
-        playCameraShutterSound()
-        Settings.TAKE_A_PICTURE_EVENT.clear() # Reset the event
-    except Exception as e:
-        print(f"Failed to save picture: {e}")
-
-def playCameraShutterSound():
-    try:
-        pygame.mixer.init()
-        sound_path = "SoundEffects/shutter.wav"
-        pygame.mixer.Sound(sound_path).play()
-    except Exception as e:
-        print(f"Shutter sound failed: {e}")
 
 
 
