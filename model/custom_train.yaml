@@ -1,0 +1,20 @@
+# custom_train.yaml
+
+task: detect
+mode: train
+model: yolov8n.pt
+data: data.yaml
+epochs: 100
+imgsz: 640
+
+# Augmentations
+fliplr: 0.5          # 50% chance horizontal flip
+hsv_s: 0.1           # ±10% saturation change
+hsv_v: 0.1           # ±10% brightness/contrast change
+
+# Other useful defaults
+batch: 16
+optimizer: auto
+patience: 100
+save: True
+plots: True

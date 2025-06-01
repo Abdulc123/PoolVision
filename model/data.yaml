@@ -1,0 +1,13 @@
+train: ../train/images
+val: ../valid/images
+test: ../test/images
+
+nc: 21
+names: ['black_8ball', 'blue_solid', 'blue_stripe', 'cue_ball', 'cue_body', 'cue_tip', 'green_solid', 'green_stripe', 'maroon_solid', 'maroon_stripe', 'orange_solid', 'orange_stripe', 'player_body', 'player_hand', 'playr', 'purple_solid', 'purple_stripe', 'red_solid', 'red_stripe', 'yellow_solid', 'yellow_stripe']
+
+roboflow:
+  workspace: poolvision
+  project: pool-vision-ball-detection
+  version: 4
+  license: CC BY 4.0
+  url: https://universe.roboflow.com/poolvision/pool-vision-ball-detection/dataset/4

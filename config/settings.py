@@ -24,44 +24,6 @@ BALL_RADIUS = 20
 LOWER_GREEN_HSV_RANGE = np.array([40,  52,  99])
 UPPER_GREEN_HSV_RANGE = np.array([107,  229,  175])
 
-HOUGH_KERNEL_SIZE   = 7          # Kernel Trackbar
-HOUGH_MIN_RADIUS    = 18          # “MinRad”
-HOUGH_MAX_RADIUS    = 27        # “MaxRad”
-HOUGH_DP            = 15 / 10.0  # “dp*10” → 1.8
-HOUGH_MIN_DIST      = 41        # “MinDist”
-HOUGH_CANNY_HIGH    = 112        # “CannyHi”
-HOUGH_ACCUM_THRESH  = 31         # “AccThresh”
-
-# ighting threshholds
-WHITE_SAT_THRESH  =  120   # S < this → “white-ish”
-WHITE_VAL_THRESH  = 240   # V > this → “white-ish”
-STRIPE_FRAC_THRESH = 0.20  # ≥5% white pixels → stripe
-SAMPLE_COLOR_RADIUS = 15
-
-# Ball Color Hue Ranges:
-BALL_HSV_RANGES = {
-    "white" : (np.array([0, 0, 200]), np.array([179,50, 255])),
-    "blue" : (np.array([99,121,102]), np.array([114,255,216])),
-    "red"  : (np.array([172,105,192]), np.array([179,181,255])),
-    "purple" : (np.array([99,85,68]), np.array([118,205,141])),
-    "yellow" : (np.array([20, 150, 150]),np.array([30, 255, 255])),
-    "orange" : (np.array([1, 86, 231]), np.array([22, 157, 255])),
-    "maroon" : (np.array([151, 34, 80]), np.array([179, 143, 162])),
-    "green" : (np.array([86, 196, 64]), np.array([98, 255, 118])),
-    "black" : (np.array([0,0,0]), np.array([179, 255,60]))
-}
-
-BALL_HUE_RANGES = {
-    'blue'  : ( 99, 114),
-    'red'   : (172, 179),
-    'purple': ( 99, 118),
-    'yellow': ( 20,  30),
-    'orange': (  1,  22),
-    'maroon': (151, 179),
-    'green' : ( 86,  98),
-    'white' : None, # Cue Ball
-    'black' : None  # Eight Ball
-}
 
 # Map Ball Keys to Colors:
 COLOR_MAP_SOLIDS = {
@@ -84,6 +46,30 @@ COLOR_MAP_STRIPES = {
     'orange_stripe': (  0, 165, 255),
     'maroon_stripe': (153,   0,   0),
     'green_stripe' : (  0, 255,   0),
+}
+
+COLOR_MAP = {
+    'black_8ball': (0, 0, 0),
+    'blue_solid': (255, 0, 0),
+    'blue_stripe': (255, 0, 0),
+    'cue_ball': (255, 255, 255),
+    'cue_body': (200, 200, 200),   # Example, adjust as needed
+    'cue_tip': (50, 50, 50),       # Example, adjust as needed
+    'green_solid': (0, 255, 0),
+    'green_stripe': (0, 255, 0),
+    'maroon_solid': (153, 0, 0),
+    'maroon_stripe': (153, 0, 0),
+    'orange_solid': (0, 165, 255),
+    'orange_stripe': (0, 165, 255),
+    'player_body': (100, 100, 100), # Example, adjust as needed
+    'player_hand': (200, 180, 120), # Example, adjust as needed
+    'playr': (100, 100, 100),       # Example, adjust as needed
+    'purple_solid': (128, 0, 128),
+    'purple_stripe': (128, 0, 128),
+    'red_solid': (0, 0, 255),
+    'red_stripe': (0, 0, 255),
+    'yellow_solid': (0, 255, 255),
+    'yellow_stripe': (0, 255, 255),
 }
 
 

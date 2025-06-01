@@ -3,6 +3,8 @@ import os, pygame, time, vosk
 import sounddevice as sd
 import queue, json, threading
 import config.settings as Settings
+from processing.BallDetector import BallDetector
+
 
 class VoiceManager:
     @staticmethod
@@ -38,7 +40,7 @@ class VoiceManager:
                             command = result.get("text", "").lower()
                             if command:
                                 if print_audio: print(f"You said: {command}")
-                                if "take a picture" in command:
+                                if "hey" in command:
                                     Settings.TAKE_A_PICTURE_EVENT.set()
                                 
 
@@ -82,3 +84,4 @@ class PictureManager:
             pygame.mixer.Sound(sound_path).play()
         except Exception as e:
             print(f"Shutter sound failed: {e}")
+
