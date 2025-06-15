@@ -20,7 +20,7 @@ class CameraCapture:
         if not self.cap.isOpened():
             raise RuntimeError("CameraCapture: Failed to open camera.")
         
-    def get_frame(self):
+    def getFrame(self):
         """
         Capture a single frame from the camera each time its called
         :return: The captured frame or None if it failed
