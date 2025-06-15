@@ -1,5 +1,5 @@
 import cv2 as cv
-import time, os, pygame
+import time, os, traceback
 import config.settings as Settings
 import utils.Utils as Utils
 from display.simulated_table import SimulatedTable
@@ -30,7 +30,6 @@ class PoolVision:
 
         except Exception as e:
             print(f"Unexpected error: {e}")
-            import traceback
             traceback.print_exc()
 
         finally:
@@ -39,13 +38,15 @@ class PoolVision:
             cv.destroyAllWindows()
 
     def processFrames(self):
-        self.convertFrameToWarpedFrame()
-        self.getModelPredictions()
-
-        if self.show_simulated_table:
-            self.showSimulatedTable()
-
-        self.handleKeyboardInputs()
+        try:
+            self.convertFrameToWarpedFrame()
+            self.getModelPredictions()
+            if self.show_simulated_table:
+                self.showSimulatedTable()
+            self.handleKeyboardInputs()
+        except Exception as e:
+            print(f"Error in processFrames: {e}")
+            traceback.print_exc()
 
     def convertFrameToWarpedFrame(self):
         frame = self.camera.getFrame()
@@ -63,24 +64,35 @@ class PoolVision:
     def showSimulatedTable(self):
         simulated_frame = self.simulatedTable.getSimulatedTableFrame(self.model_results, self.warped_frame)
         cv.imshow("Simulated Table", simulated_frame)
-        cv.imshow("Warped Frame", self.warped_frame)
+        # cv.imshow("Warped Frame", self.warped_frame)
 
     def getModelPredictions(self):
         results = self.model.predict(self.warped_frame, conf=0.5, verbose=False)
+        processed_results = []
+
         for r in results:
             for box in r.boxes:
-                cls_id = int(box.cls[0])
+                cls_id = int(box.cls)
                 class_name = self.model.names[cls_id]
-                conf = float(box.conf[0])
-                x1, y1, x2, y2 = box.xyxy[0]
-                center_x = int((x1 + x2) / 2)
-                center_y = int((y1 + y2) / 2)
+                conf = float(box.conf)
+                x1, y1, x2, y2 = map(int, box.xyxy.tolist()[0])
 
-                # Draw on warped frame
-                cv.rectangle(self.warped_frame, (int(x1), int(y1)), (int(x2), int(y2)), (0, 255, 0), 2)
-                cv.putText(self.warped_frame, f'{class_name} {conf:.2f}', (int(x1), int(y1) - 10), cv.FONT_HERSHEY_SIMPLEX, 0.5, (0, 255, 0), 2)
+                processed_results.append({
+                    'name': class_name,
+                    'box': [x1, y1, x2, y2],
+                    'confidence': conf
+                })
 
-        self.model_results = results
+                # Optional: draw box overly
+                self.drawBoxOverlay(x1, x2, y1, y2)
+
+        self.model_results = processed_results
+
+    def drawBoxOverlay(self, x1, x2, y1, y2):
+        # Draw a faint rectangle border (no fill)
+        box_color = (180, 180, 180)  # Light gray (BGR)
+        thickness = 2  # Thin border
+        cv.rectangle(self.warped_frame, (x1, y1), (x2, y2), box_color, thickness)
 
     def handleKeyboardInputs(self):
         key = cv.waitKey(1) & 0xFF
