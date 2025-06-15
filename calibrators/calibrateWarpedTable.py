@@ -8,7 +8,7 @@ import config.settings as Settings
 # python -m calibrators.calibrateWarpedTable
 
 # Load existing corner cache
-_CACHE_FILE = os.path.join(os.path.dirname(__file__), "calibrateWarpedTable.json")
+_CACHE_FILE = os.path.join(os.path.dirname(__file__), "JsonData/calibrateWarpedTable.json")
 if os.path.exists(_CACHE_FILE):
     with open(_CACHE_FILE, "r") as f:
         corner_cache = json.load(f)

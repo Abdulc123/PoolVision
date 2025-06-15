@@ -3,12 +3,13 @@ import numpy as np
 import json
 import os
 from camera.capture import CameraCapture
+from PoolVision import PoolVision
 import config.settings as Settings
 
 # python -m calibrators.calibrateWarpedTable
 
 # Load existing corner cache
-_CACHE_FILE = os.path.join(os.path.dirname(__file__), "calibrateCushions.json")
+_CACHE_FILE = os.path.join(os.path.dirname(__file__), "JsonData/calibrateCushions.json")
 if os.path.exists(_CACHE_FILE):
     with open(_CACHE_FILE, "r") as f:
         corner_cache = json.load(f)
@@ -37,8 +38,7 @@ def mouse_callback(event, x, y, flags, param):
 
 def main():
     global points
-
-    camera = CameraCapture(camera_index=0, width=Settings.WARPED_TABLE_W, height=Settings.WARPED_TABLE_H)
+    poolVision = PoolVision(show_simulated_table=True)
 
     cv.namedWindow("Calibrator")
     cv.setMouseCallback("Calibrator", mouse_callback)
@@ -48,7 +48,8 @@ def main():
     print("Press 'q' to quit without saving")
 
     while True:
-        frame = camera.get_frame()
+        poolVision.convertFrameToWarpedFrame()
+        frame = poolVision.warped_frame
 
         # Draw current points + connecting rectangle
         for idx, p in enumerate(points):
@@ -79,7 +80,6 @@ def main():
             print("Exiting without saving.")
             break
 
-    camera.release()
     cv.destroyAllWindows()
 
 if __name__ == "__main__":
