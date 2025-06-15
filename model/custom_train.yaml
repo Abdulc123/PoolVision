@@ -2,10 +2,11 @@
 
 task: detect
 mode: train
-model: yolov8n.pt
+model: yolov8s.pt
 data: data.yaml
 epochs: 100
 imgsz: 640
+pateience: 10
 
 # Augmentations
 fliplr: 0.5          # 50% chance horizontal flip

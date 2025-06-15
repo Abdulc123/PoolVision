@@ -1,8 +1,8 @@
 
-Pool Vision: Ball Detection - v4 2025-05-31 7:06pm
+Pool Vision: Ball Detection - v5 2025-06-08 8:12pm
 ==============================
 
-This dataset was exported via roboflow.com on May 31, 2025 at 11:45 PM GMT
+This dataset was exported via roboflow.com on June 9, 2025 at 1:00 AM GMT
 
 Roboflow is an end-to-end computer vision platform that helps you
 * collaborate with your team on computer vision projects
@@ -17,7 +17,7 @@ visit https://github.com/roboflow/notebooks
 
 To find over 100k other datasets and pre-trained models, visit https://universe.roboflow.com
 
-The dataset includes 66 images.
+The dataset includes 442 images.
 Objects are annotated in YOLOv8 format.
 
 The following pre-processing was applied to each image:
